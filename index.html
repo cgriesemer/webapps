@@ -1,72 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Griz Apps Dashboard</title>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <!-- Boxicons for icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
-    .apps-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .app-item {
-      margin: 0;
-      transition: transform 0.3s ease;
-    }
-    
-    .app-item:hover {
-      transform: translateY(-5px);
-    }
-    
-    .app-link {
-      text-decoration: none;
-      display: block;
-      background: white;
-      color: #5563DE;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 2px solid #5563DE;
-      box-shadow: 0 4px 10px rgba(85, 99, 222, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    
-    .app-link:hover {
-      background: #5563DE;
-      color: white;
-      box-shadow: 0 6px 15px rgba(85, 99, 222, 0.2);
-    }
-    
+
+    /* Body & Layout */
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #74abe2, #5563de);
       color: #333;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
+      margin: 0;
     }
-    
+
     @keyframes gradient {
       0% {
         background-position: 0% 50%;
@@ -78,8 +45,8 @@
         background-position: 0% 50%;
       }
     }
-    
-    .header {
+
+    header.header {
       background: rgba(255, 255, 255, 0.95);
       padding: 1rem 2rem;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -92,9 +59,9 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .logo {
-      font-family: 'Montserrat', sans-serif;
+      font-family: "Montserrat", sans-serif;
       font-weight: 700;
       font-size: 1.5rem;
       color: #2d2d2d;
@@ -103,18 +70,18 @@
       align-items: center;
       gap: 0.5rem;
     }
-    
+
     .logo i {
-      color: #5563DE;
+      color: #5563de;
       font-size: 1.75rem;
     }
-    
+
     .nav-links {
       display: flex;
       gap: 1.5rem;
       list-style: none;
     }
-    
+
     .nav-link {
       text-decoration: none;
       color: #444;
@@ -124,45 +91,48 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    
-    .nav-link:hover, .nav-link.active {
+
+    .nav-link:hover,
+    .nav-link.active {
       background: rgba(85, 99, 222, 0.1);
-      color: #5563DE;
+      color: #5563de;
     }
-    
+
     .nav-link i {
       margin-right: 0.5rem;
     }
-    
+
+    /* Main Content Area */
     .main-content {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 2rem;
+      padding: 1rem;
+      /* Add this to ensure main content fills the entire vertical space */
+      height: calc(100vh - 130px); /* Subtracting approx header + footer height */
     }
-    
+
     .welcome-container {
       background: rgba(255, 255, 255, 0.95);
       padding: 3rem;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      max-width: 600px;
       width: 100%;
       text-align: center;
-      margin: 0 auto;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: none;
     }
-    
+
     h1 {
-      font-family: 'Montserrat', sans-serif;
+      font-family: "Montserrat", sans-serif;
       font-size: 2.5rem;
       margin-bottom: 1rem;
       color: #2d2d2d;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
-    
+
     p {
       font-size: 1.1rem;
       margin-bottom: 2.5rem;
@@ -170,41 +140,88 @@
       font-weight: 300;
       line-height: 1.6;
     }
-    
+
     .header-decoration {
       height: 4px;
       width: 60px;
-      background: linear-gradient(90deg, #74ABE2, #5563DE);
+      background: linear-gradient(90deg, #74abe2, #5563de);
       margin: 0 auto 2rem;
       border-radius: 2px;
     }
-    
-    .footer {
-      padding: 1rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: auto;
+
+    /* Apps List */
+    .apps-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+      max-width: 600px;
     }
-    
-    /* Updated iframe container to use flexible height */
+
+    .app-item {
+      transition: transform 0.3s ease;
+    }
+
+    .app-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .app-link {
+      text-decoration: none;
+      background: white;
+      color: #5563de;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      border: 2px solid #5563de;
+      box-shadow: 0 4px 10px rgba(85, 99, 222, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .app-link:hover {
+      background: #5563de;
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(85, 99, 222, 0.2);
+    }
+
+    /* Iframe Container - UPDATED for better space usage */
     .iframe-container {
       flex: 1;
-      width: 100%;
+      display: none; /* Hidden until user selects an app */
+      margin-top: 1rem;
       border-radius: 16px;
       overflow: hidden;
       background: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      display: none;
+      /* Make sure it takes full height of its parent */
+      height: 100%;
+      min-height: 500px; /* Ensure a minimum height */
+      position: relative; /* Added for proper iframe positioning */
     }
-    
+
     iframe {
+      position: absolute; /* Position absolutely within container */
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       border: none;
     }
-    
+
+    /* Footer */
+    .footer {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .header {
@@ -212,27 +229,32 @@
         padding: 1rem;
         gap: 1rem;
       }
-      
+
       .nav-links {
         width: 100%;
         justify-content: space-between;
       }
-      
+
       .nav-link {
         padding: 0.5rem;
         font-size: 0.9rem;
       }
-      
+
       .nav-link i {
         margin-right: 0;
       }
-      
+
       .welcome-container {
         padding: 2rem;
       }
-      
+
       h1 {
         font-size: 2rem;
+      }
+      
+      /* Adjust main content height for mobile */
+      .main-content {
+        height: calc(100vh - 180px); /* Adjust for taller header on mobile */
       }
     }
   </style>
@@ -240,128 +262,155 @@
 <body>
   <header class="header">
     <div class="logo">
-      <i class='bx bx-cube-alt'></i>
+      <i class="bx bx-cube-alt"></i>
       <span>Griz Apps Dashboard</span>
     </div>
     <ul class="nav-links">
       <li>
         <a href="#" class="nav-link active" data-page="" onclick="showWelcome()">
-          <i class='bx bx-home'></i>
+          <i class="bx bx-home"></i>
           <span class="nav-text">Home</span>
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link" data-page="FLASH-PARSER.html" onclick="loadPage(this)">
-          <i class='bx bx-analyse'></i>
+        <a
+          href="#"
+          class="nav-link"
+          data-page="FLASH-PARSER.html"
+          onclick="loadPage(this)"
+        >
+          <i class="bx bx-analyse"></i>
           <span class="nav-text">Mean Plan Parser</span>
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link" data-page="ai_studio_sql-2.html" onclick="loadPage(this)">
-          <i class='bx bx-data'></i>
+        <a
+          href="#"
+          class="nav-link"
+          data-page="ai_studio_sql-2.html"
+          onclick="loadPage(this)"
+        >
+          <i class="bx bx-data"></i>
           <span class="nav-text">SQL Generator</span>
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link" data-page="canned-admin.html" onclick="loadPage(this)">
-          <i class='bx bx-message-square-dots'></i>
+        <a
+          href="#"
+          class="nav-link"
+          data-page="canned-admin.html"
+          onclick="loadPage(this)"
+        >
+          <i class="bx bx-message-square-dots"></i>
           <span class="nav-text">Admin Greeting</span>
         </a>
       </li>
     </ul>
   </header>
-  
+
   <main class="main-content">
     <div class="welcome-container" id="welcome">
       <h1>Welcome to Griz Apps</h1>
       <div class="header-decoration"></div>
       <p>Use the navigation menu above or select an application below to get started:</p>
-      
+
       <ul class="apps-list">
         <li class="app-item">
-          <a href="#" class="app-link" onclick="loadPageFromButton('FLASH-PARSER.html')">
-            <i class='bx bx-analyse'></i>
+          <a
+            href="#"
+            class="app-link"
+            onclick="loadPageFromButton('FLASH-PARSER.html')"
+          >
+            <i class="bx bx-analyse"></i>
             Mean Plan Parser
           </a>
         </li>
         <li class="app-item">
-          <a href="#" class="app-link" onclick="loadPageFromButton('ai_studio_sql-2.html')">
-            <i class='bx bx-data'></i>
+          <a
+            href="#"
+            class="app-link"
+            onclick="loadPageFromButton('ai_studio_sql-2.html')"
+          >
+            <i class="bx bx-data"></i>
             SQL Generator
           </a>
         </li>
         <li class="app-item">
-          <a href="#" class="app-link" onclick="loadPageFromButton('canned-admin.html')">
-            <i class='bx bx-message-square-dots'></i>
+          <a
+            href="#"
+            class="app-link"
+            onclick="loadPageFromButton('canned-admin.html')"
+          >
+            <i class="bx bx-message-square-dots"></i>
             IUG Admin Greeting Generator
           </a>
         </li>
       </ul>
     </div>
-    
+
     <div class="iframe-container" id="app-frame-container">
       <iframe id="app-frame" src="" title="Application Frame"></iframe>
     </div>
   </main>
-  
+
   <footer class="footer">
     Griz Apps Dashboard © 2025
   </footer>
-  
+
   <script>
-    // Function to load a page into the iframe
+    // Switches from welcome screen to the iframe
     function loadPage(element) {
       // Update active nav link
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.classList.remove("active");
       });
-      element.classList.add('active');
-      
+      element.classList.add("active");
+
       // Get the page URL from data attribute
-      const pageUrl = element.getAttribute('data-page');
-      
-      // Hide welcome screen and show iframe
-      document.getElementById('welcome').style.display = 'none';
-      const frameContainer = document.getElementById('app-frame-container');
-      frameContainer.style.display = 'block';
-      
+      const pageUrl = element.getAttribute("data-page");
+
+      // Hide welcome screen, show iframe container
+      document.getElementById("welcome").style.display = "none";
+      const frameContainer = document.getElementById("app-frame-container");
+      frameContainer.style.display = "block";
+
       // Set iframe source
-      document.getElementById('app-frame').src = pageUrl;
+      document.getElementById("app-frame").src = pageUrl;
     }
-    
-    // Function to load a page from welcome screen buttons
+
+    // Loads a page from welcome screen "app-link" buttons
     function loadPageFromButton(pageUrl) {
-      // Update active nav link based on the page being loaded
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-page') === pageUrl) {
-          link.classList.add('active');
+      // Update active nav link
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("data-page") === pageUrl) {
+          link.classList.add("active");
         }
       });
-      
-      // Hide welcome screen and show iframe
-      document.getElementById('welcome').style.display = 'none';
-      const frameContainer = document.getElementById('app-frame-container');
-      frameContainer.style.display = 'block';
-      
+
+      // Hide welcome screen, show iframe container
+      document.getElementById("welcome").style.display = "none";
+      const frameContainer = document.getElementById("app-frame-container");
+      frameContainer.style.display = "block";
+
       // Set iframe source
-      document.getElementById('app-frame').src = pageUrl;
+      document.getElementById("app-frame").src = pageUrl;
     }
-    
-    // Function to show welcome screen
+
+    // Returns to welcome screen
     function showWelcome() {
       // Update active nav link
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.classList.remove("active");
       });
-      document.querySelector('[data-page=""]').classList.add('active');
-      
-      // Show welcome screen and hide iframe
-      document.getElementById('welcome').style.display = 'block';
-      document.getElementById('app-frame-container').style.display = 'none';
-      
+      document.querySelector('[data-page=""]').classList.add("active");
+
+      // Show welcome screen, hide iframe container
+      document.getElementById("welcome").style.display = "block";
+      document.getElementById("app-frame-container").style.display = "none";
+
       // Clear iframe source
-      document.getElementById('app-frame').src = '';
+      document.getElementById("app-frame").src = "";
     }
   </script>
 </body>
