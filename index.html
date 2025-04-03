@@ -4,73 +4,186 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Web Apps Landing Page</title>
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Boxicons for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
-    }
-    body {
       margin: 0;
       padding: 0;
-      font-family: 'Montserrat', sans-serif;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #74ABE2, #5563DE);
       color: #333;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 2rem;
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
     }
+    
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    
     .container {
       background: rgba(255, 255, 255, 0.95);
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       max-width: 600px;
-      width: 90%;
+      width: 100%;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 100px;
+      height: 100px;
+      background: rgba(85, 99, 222, 0.1);
+      border-radius: 50%;
+      z-index: -1;
+    }
+    
+    .container::after {
+      content: "";
+      position: absolute;
+      bottom: -50px;
+      right: -50px;
+      width: 120px;
+      height: 120px;
+      background: rgba(116, 171, 226, 0.1);
+      border-radius: 50%;
+      z-index: -1;
+    }
+    
     h1 {
+      font-family: 'Montserrat', sans-serif;
       font-size: 2.5rem;
       margin-bottom: 1rem;
-      color: #444;
+      color: #2d2d2d;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
+    
     p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
       color: #666;
+      font-weight: 300;
+      line-height: 1.6;
     }
-    ul {
+    
+    .apps-list {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: grid;
+      gap: 1rem;
     }
-    li {
-      margin: 1rem 0;
+    
+    .app-item {
+      margin: 0;
+      transition: transform 0.3s ease;
     }
-    a {
+    
+    .app-item:hover {
+      transform: translateY(-5px);
+    }
+    
+    .app-link {
       text-decoration: none;
-      background: #5563DE;
-      color: #fff;
-      padding: 0.8rem 1.5rem;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: background 0.3s ease;
+      display: block;
+      background: white;
+      color: #5563DE;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 2px solid #5563DE;
+      box-shadow: 0 4px 10px rgba(85, 99, 222, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    a:hover {
-      background: #374ABE;
+    
+    .app-link:hover {
+      background: #5563DE;
+      color: white;
+      box-shadow: 0 6px 15px rgba(85, 99, 222, 0.2);
+    }
+    
+    .app-link i {
+      font-size: 1.2rem;
+    }
+    
+    .header-decoration {
+      height: 4px;
+      width: 60px;
+      background: linear-gradient(90deg, #74ABE2, #5563DE);
+      margin: 0 auto 2rem;
+      border-radius: 2px;
+    }
+    
+    .footer {
+      margin-top: 2.5rem;
+      font-size: 0.9rem;
+      color: #888;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Welcome to My Web Apps</h1>
-    <p>Select one of the web apps below to get started:</p>
-    <ul>
-      <li><a href="FLASH-PARSER.html">Mean Plan Parser</a></li>
-      <li><a href="ai_studio_sql-2.html">SQL Generator</a></li>
-      <li><a href="canned-admin.html">IUG Admin Greeting Generator</a></li>
+    <div class="header-decoration"></div>
+    <p>Select one of the web applications below to get started with your project</p>
+    
+    <ul class="apps-list">
+      <li class="app-item">
+        <a href="FLASH-PARSER.html" class="app-link">
+          <i class='bx bx-analyse'></i>
+          Mean Plan Parser
+        </a>
+      </li>
+      <li class="app-item">
+        <a href="ai_studio_sql-2.html" class="app-link">
+          <i class='bx bx-data'></i>
+          SQL Generator
+        </a>
+      </li>
+      <li class="app-item">
+        <a href="canned-admin.html" class="app-link">
+          <i class='bx bx-message-square-dots'></i>
+          IUG Admin Greeting Generator
+        </a>
+      </li>
     </ul>
+    
+    <div class="footer">
+      Choose an application to begin your workflow
+    </div>
   </div>
 </body>
 </html>
