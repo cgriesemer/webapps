@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meal Plan Parser with Save Report</title>
+  <style>
+    /* (The CSS from studio_parser_attempt_3.html is fine and can be reused.  No major changes needed here.) */
+    :root {
+      --primary-color: #4a6da7;
+      --secondary-color: #f8f9fa;
+      --border-color: #dee2e6;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7f9;
+      color: #333;
+      line-height: 1.6;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    h1, h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+    
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 10px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    
+    #inputText {
+      height: 200px;
+      margin-bottom: 10px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    button {
+      padding: 10px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: var(--primary-color);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #3a5a8f;
+    }
+    
+    button.secondary {
+      background-color: #6c757d;
+    }
+    
+    button.secondary:hover {
+      background-color: #5a6268;
+    }
+    
+    #saveButton {
+      background-color: var(--success-color);
+    }
+    
+    #saveButton:hover {
+      background-color: #218838;
+    }
+    
+    #copyButton {
+      background-color: #17a2b8;
+    }
+    
+    #copyButton:hover {
+      background-color: #138496;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: white;
+    }
+    
+    table, th, td {
+      border: 1px solid var(--border-color);
+    }
+    
+    th {
+      background-color: var(--secondary-color);
+      padding: 12px 8px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+    
+    /* Sticky first column (PIK) */
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      background-color: inherit; /* Inherit background from row/header */
+      z-index: 1; /* Ensure it's above other cells */
+    }
+
+    td {
+      padding: 10px 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    tr:hover {
+      background-color: #f1f4f7;
+    }
+    
+    #result {
+      margin-top: 20px;
+      overflow-x: auto; /* Allow horizontal scrolling */
+    }
+    
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .stat-box {
+      background-color: var(--secondary-color);
+      border-radius: 4px;
+      padding: 10px 15px;
+      flex: 1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .alert {
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+    }
+    
+    .alert-warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+    }
+    
+    .alert-info {
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+     /* Style for progress bar */
+    #progressBar {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* Style for scrollable error list */
+    .error-scroll-container {
+        max-height: 200px; /* Or whatever height you prefer */
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Meal Plan Parser</h1>
+    <p>Paste your pipe‑delimited report into the box below, then click "Parse Report" to see which meal plan is the oldest for each patron. You can also click "Save Report" to download a copy for your records.</p>
+
+    <div class="alert alert-info">
+      <strong>Format:</strong> Each line should contain 11 fields separated by a pipe (|) in this order:
+      <br>
+      PIK | First Name | Last Name | Meal Plan | 1. | . | Repeated Meal Plan | -1 | Date (DD-MON-YYYY) | Time (HH24:MI:SS) | Row Number (2 for oldest)
+    </div>
+
+    <textarea id="inputText" placeholder="Paste report here..."></textarea>
+
+    <div class="button-group">
+      <button id="parseButton">Parse Report</button>
+      <button id="saveButton">Save Report</button>
+      <button id="clearButton" class="secondary">Clear</button>
+    </div>
+      <!-- Add progress bar -->
+    <progress id="progressBar" value="0" max="100" style="display: none;"></progress>
+    <div id="parsingFeedback"></div>
+  </div>
+
+  <div id="resultsContainer" class="container" style="display: none;">
+    <h2>Oldest Meal Plans to Remove</h2>
+
+    <div class="stats" id="statsArea"></div>
+
+    <div id="result"></div>
+
+    <div id="batchDeleteSection" style="display: none; margin-top: 30px;">
+      <h2>Batch Delete PIKs</h2>
+      <p>Below is a list of PIKs grouped by meal plan. You can copy and paste these into your admin software.</p>
+      <textarea id="pikList" readonly style="height: 150px;"></textarea>
+      <div class="button-group">
+        <button id="copyButton">Copy PIKs to Clipboard</button>
+        <button id="downloadPIKs" class="secondary">Download PIK List</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+    document.addEventListener('DOMContentLoaded', function() {
+      const inputText = document.getElementById('inputText');
+      const parseButton = document.getElementById('parseButton');
+      const saveButton = document.getElementById('saveButton');
+      const clearButton = document.getElementById('clearButton');
+      const resultsContainer = document.getElementById('resultsContainer');
+      const result = document.getElementById('result');
+      const batchDeleteSection = document.getElementById('batchDeleteSection');
+      const pikList = document.getElementById('pikList');
+      const copyButton = document.getElementById('copyButton');
+      const downloadPIKs = document.getElementById('downloadPIKs');
+      const parsingFeedback = document.getElementById('parsingFeedback');
+      const statsArea = document.getElementById('statsArea');
+      const progressBar = document.getElementById('progressBar'); // Get progress bar element
+
+       // Input validation on paste
+        inputText.addEventListener('paste', (event) => {
+            const text = event.clipboardData.getData('text/plain');
+            if (text.indexOf('|') === -1) { // Very basic check: does it contain a pipe?
+                showFeedback('The pasted text does not appear to be a pipe-delimited report.', 'warning');
+            }
+        });
+
+
+       // Helper functions for parsing and validation (Decomposition)
+        function parseLine(line, lineNumber) {
+            const tokens = line.split("|").map(token => token.trim());
+            if (tokens.length !== 11) {
+                return { error: `Line ${lineNumber}: Expected 11 tokens, found ${tokens.length}` };
+            }
+            return { tokens };
+        }
+
+        function validatePIK(pik, lineNumber) {
+            if (!/^\d{9}$/.test(pik)) {
+                return { error: `Line ${lineNumber}: Invalid PIK format: ${pik} (must be 9 digits)` };
+            }
+            return {};
+        }
+
+        function validateMealPlan(mealPlan, lineNumber) {
+            if (!/^\d+(S)?$/.test(mealPlan)) {
+                return { error: `Line ${lineNumber}: Invalid meal plan format: ${mealPlan}` };
+            }
+            return {};
+        }
+
+        function parseDateString(dateString, lineNumber) {
+            let parsedDate = null;
+            const dateParts = dateString.match(/(\d+)-([A-Z]{3})-(\d+)\s+(\d+):(\d+):(\d+)/);
+            if (dateParts) {
+              const monthNames = { "JAN":0, "FEB":1, "MAR":2, "APR":3, "MAY":4, "JUN":5,
+                                     "JUL":6, "AUG":7, "SEP":8, "OCT":9, "NOV":10, "DEC":11 };
+               const month = monthNames[dateParts[2]];
+               if (month !== undefined) {
+                    parsedDate = new Date(dateParts[3], month, dateParts[1], dateParts[4], dateParts[5], dateParts[6]);
+               }
+            }
+            if (!parsedDate || isNaN(parsedDate)) {
+                return {error: `Line ${lineNumber}: Invalid date format: ${dateString}`, parsedDate: null};
+            }
+
+            return {parsedDate};
+        }
+
+
+      // Asynchronous chunk parsing function
+        async function parseReportChunk(lines, start, chunkSize) {
+            return new Promise(resolve => {
+                const results = {};
+                const parseErrors = [];
+                let oldestFound = 0;
+                const end = Math.min(start + chunkSize, lines.length);
+
+                for (let i = start; i < end; i++) {
+                    let line = lines[i].trim();
+                    if (!line) {
+                        continue; // Skip empty lines
+                    }
+
+                    const lineResult = parseLine(line, i + 1);
+                    if (lineResult.error) {
+                        parseErrors.push(lineResult.error);
+                        continue;
+                    }
+                    const tokens = lineResult.tokens;
+                    const finalIndicator = tokens[10];
+
+                    if (finalIndicator === "2") {
+                        oldestFound++;
+                        const pik = tokens[0];
+                        const pikResult = validatePIK(pik, i+1);
+                        if(pikResult.error){
+                            parseErrors.push(pikResult.error);
+                            continue;
+                        }
+
+                        const mealPlan = tokens[3];
+                        const mealPlanResult = validateMealPlan(mealPlan, i+1);
+                        if(mealPlanResult.error){
+                            parseErrors.push(mealPlanResult.error);
+                            continue;
+                        }
+
+                         const dateString = tokens[8] + " " + tokens[9];
+                         const dateResult = parseDateString(dateString, i+1);
+                         if(dateResult.error){
+                            parseErrors.push(dateResult.error);
+                         }
+                         let parsedDate = dateResult.parsedDate; //will be null if parsing failed
+
+                        // Save record for this PIK
+                        results[pik] = {
+                            pik: pik,
+                            patron: tokens[1] + " " + tokens[2],
+                            mealPlan: mealPlan,
+                            date: parsedDate
+                        };
+                    }
+
+                }
+
+                resolve({ results, parseErrors, oldestFound });
+            });
+        }
+
+        // Main parsing function (now asynchronous)
+        async function parseReport(input) {
+            const lines = input.split('\n');
+            const chunkSize = 500; // Adjust as needed, 500-1000 is generally good
+            let processedLines = 0;  // Track total processed
+            let oldestFound = 0;
+            const allResults = {};
+            const allParseErrors = [];
+
+            progressBar.max = lines.length; // Set max before the loop
+
+            for (let i = 0; i < lines.length; i += chunkSize) {
+                const { results, parseErrors, oldestFound: chunkOldestFound } = await parseReportChunk(lines, i, chunkSize);
+                processedLines += Object.keys(results).length + parseErrors.length; //count error lines as processed
+                oldestFound += chunkOldestFound;
+                Object.assign(allResults, results); // Merge results
+                allParseErrors.push(...parseErrors); // Concatenate errors
+
+                // Update progress bar
+                progressBar.value = i + chunkSize;
+                await new Promise(resolve => setTimeout(resolve, 0)); // Yield to event loop
+            }
+
+            progressBar.value = lines.length; // Ensure it reaches 100%
+            const resultArray = Object.values(allResults);
+            const uniquePatrons = resultArray.length; // Get unique patrons efficiently
+
+            displayStats(processedLines, 0, oldestFound, uniquePatrons, allParseErrors.length); //No skipped lines
+            displayResults(resultArray, allParseErrors);
+        }
+
+      // Display results and errors (modified for detailed error handling)
+        function displayResults(resultArray, parseErrors) {
+          let html = '';
+
+          if (resultArray.length === 0) {
+            html += `<div class="alert alert-warning">
+                      <strong>No oldest meal plans found.</strong> Ensure your report is correctly formatted and contains entries with "2" at the end.
+                     </div>`;
+          } else {
+                // Build Table
+                html += `<table>
+                      <thead>
+                        <tr>
+                          <th>PIK</th>
+                          <th>Patron</th>
+                          <th>Meal Plan</th>
+                          <th>Date Added</th>
+                        </tr>
+                      </thead>
+                      <tbody>`;
+            resultArray.forEach(function(item) {
+               // Controlled date formatting
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'}; // Example options
+                const formattedDate = item.date ? item.date.toLocaleDateString('en-US', options) : 'Invalid Date'; // Or your preferred locale
+
+              html += `<tr>
+                        <td>${escapeHtml(item.pik)}</td>
+                        <td>${escapeHtml(item.patron)}</td>
+                        <td>${escapeHtml(item.mealPlan)}</td>
+                        <td>${formattedDate}</td>
+                      </tr>`;
+            });
+            html += '</tbody></table>';
+          }
+
+          // Detailed Error Handling with scrollable container
+            if (parseErrors.length > 0) {
+                html += `<div class="alert alert-warning" style="margin-top: 20px;">
+                        <strong>Warning:</strong> The following issues were found during parsing:
+                        <div class="error-scroll-container">
+                            <ul>
+                                ${parseErrors.map(err => `<li>${escapeHtml(err)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>`;
+            }
+
+
+          result.innerHTML = html;
+
+          // Group PIKs by mealPlan (same logic as before, but placed here)
+            const groups = {};
+            resultArray.forEach(function(item) {
+                if (!groups[item.mealPlan]) {
+                    groups[item.mealPlan] = [];
+                }
+                groups[item.mealPlan].push(item.pik);
+            });
+
+             // Sort meal plan keys
+            const sortedMealPlans = Object.keys(groups).sort(function(a, b) {
+                const numA = parseFloat(a), numB = parseFloat(b);
+                if (!isNaN(numA) && !isNaN(numB)) {
+                  return numA - numB;
+                }
+                return a.localeCompare(b);
+            });
+
+
+            let groupedText = '';
+            sortedMealPlans.forEach(function(mealPlan) {
+                groupedText += `Meal Plan ${mealPlan}:\n`;
+                groupedText += groups[mealPlan].join('\n') + '\n\n';
+            });
+            pikList.value = groupedText.trim();
+
+          resultsContainer.style.display = 'block';
+          batchDeleteSection.style.display = resultArray.length > 0 ? 'block' : 'none';
+          resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+      // Parse button event listener (now calls the async function)
+      parseButton.addEventListener('click', async function() {
+        const input = inputText.value.trim();
+        if (!input) {
+          showFeedback('Please paste a report into the text area first.', 'warning');
+          return;
+        }
+
+        // Show progress bar and initial message
+        progressBar.style.display = 'block';
+        progressBar.value = 0;
+        parsingFeedback.innerHTML = '<div class="alert alert-info">Processing...</div>';
+
+        try {
+            await parseReport(input); // Await the asynchronous parsing
+        } catch (error) {
+          console.error('Parsing error:', error);
+          showFeedback('An error occurred while parsing the report. Check the console for details.', 'warning');
+        } finally {
+          //parsingFeedback.innerHTML = '';  // Clear feedback message *after* processing
+        }
+      });
+
+
+      // Display statistics
+        function displayStats(processed, skipped, oldest, unique, errors) {
+            statsArea.innerHTML = `
+              <div class="stat-box">
+                <div class="stat-number">${processed}</div>
+                <div>Lines Processed</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${unique}</div>
+                <div>Unique Patrons</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${oldest}</div>
+                <div>Oldest Plans Found</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${errors}</div>
+                <div>Parse Errors</div>
+              </div>
+            `;
+        }
+
+
+      // Save the report to a text file with dynamic filename (MM_DD_YYYY)
+      saveButton.addEventListener('click', function() {
+        const text = inputText.value.trim();
+        if (!text) {
+          showFeedback('Please paste a report into the text area first.', 'warning');
+          return;
+        }
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const filename = `Duplicate_Report_${month}_${day}_${year}.txt`;
+        downloadText(text, filename);
+        showFeedback(`Report saved as ${filename}`, 'info');
+      });
+
+      // Download the PIK list
+      downloadPIKs.addEventListener('click', function() {
+        const text = pikList.value.trim();
+        if (!text) {
+          showFeedback('No PIK list available to download.', 'warning');
+          return;
+        }
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const filename = `PIK_Delete_List_${month}_${day}_${year}.txt`;
+        downloadText(text, filename);
+        showFeedback(`PIK list saved as ${filename}`, 'info');
+      });
+
+      // Copy the PIK list to the clipboard
+      copyButton.addEventListener('click', async function() {
+        const text = pikList.value;
+        if (!text) {
+          showFeedback('No PIK list available to copy.', 'warning');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          showFeedback('Copied to clipboard successfully!', 'info');
+        } catch (err) {
+          console.error('Failed to copy:', err);
+          pikList.select();
+          pikList.setSelectionRange(0, 99999);
+          try {
+            document.execCommand('copy');
+            showFeedback('Copied to clipboard!', 'info');
+          } catch (err) {
+            showFeedback('Failed to copy text. Please copy manually.', 'warning');
+          }
+        }
+      });
+
+      // Clear button functionality
+      clearButton.addEventListener('click', function() {
+        inputText.value = '';
+        result.innerHTML = '';
+        pikList.value = '';
+        resultsContainer.style.display = 'none';
+        parsingFeedback.innerHTML = '';
+        progressBar.style.display = 'none'; // Hide progress bar
+        progressBar.value = 0;
+        inputText.focus();
+      });
+
+       // Helper to show feedback messages (no change)
+        function showFeedback(message, type = 'info') {
+          parsingFeedback.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+          setTimeout(() => {
+            parsingFeedback.innerHTML = '';
+          }, 5000);
+        }
+
+      // Helper function to download text as a file (no change)
+      function downloadText(text, filename) {
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        if (window.showSaveFilePicker) {
+          const saveFile = async () => {
+            try {
+              const opts = {
+                suggestedName: filename,
+                types: [{
+                  description: 'Text Files',
+                  accept: { 'text/plain': ['.txt'] }
+                }]
+              };
+              const handle = await window.showSaveFilePicker(opts);
+              const writable = await handle.createWritable();
+              await writable.write(text);
+              await writable.close();
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                console.error(err);
+                fallbackDownload();
+              }
+            }
+          };
+          saveFile();
+        } else {
+          fallbackDownload();
+        }
+
+        function fallbackDownload() {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }
+
+      // Helper function to escape HTML (no change)
+      function escapeHtml(unsafe) {
+        return unsafe
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+    });
+  </script>
+</body>
+</html>

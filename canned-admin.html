@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canned Response Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #f9f9f9;
+        }
+        label {
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            min-height: 80px;
+        }
+        #copyBtn {
+            display: none;
+            background-color: #28a745;
+        }
+        #copyBtn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Canned Response Generator</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter recipient's name">
+
+    <label for="iug">IUG:</label>
+    <input type="text" id="iug" placeholder="Enter IUG user group(s)">
+
+    <button onclick="generateResponse()">Generate Response</button>
+    <button id="copyBtn" onclick="copyToClipboard()">Copy to Clipboard</button>
+
+    <h3>Generated Response:</h3>
+    <div id="output"></div>
+
+    <script>
+        function generateResponse() {
+            let name = document.getElementById("name").value.trim();
+            let iugInput = document.getElementById("iug").value.trim();
+            let outputDiv = document.getElementById("output");
+            let copyBtn = document.getElementById("copyBtn");
+
+            if (name === "" || iugInput === "") {
+                outputDiv.innerHTML = "<strong>Please fill out both fields.</strong>";
+                copyBtn.style.display = "none";
+                return;
+            }
+
+            // Check if there are multiple IUGs
+            let iugArray = iugInput.split(" and ").map(iug => `Door – ${iug.trim()}`);
+            let iugFormatted = iugArray.join(" and ");
+            let groupText = iugArray.length > 1 ? "user groups" : "user group";
+
+            let response = `${name},\n\nYou are now an approved administrator for the ${iugFormatted} ${groupText}.\n\nYou can access CS Gold (the online portal for door access) by going to idcard.baylor.edu and using your normal BEAR_ID and password to log in.\n\nHere are some helpful videos that will show you some of the most common features of CS Gold and walk you through how to use them:\nhttps://mediaspace.baylor.edu/playlist/dedicated/1_fmjwkw2c/1_agz7ulmf`;
+
+            outputDiv.innerText = response;
+            copyBtn.style.display = "inline-block"; // Show the copy button
+        }
+
+        function copyToClipboard() {
+            let text = document.getElementById("output").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy text: " + err);
+            });
+        }
+    </script>
+
+</body>
+</html>

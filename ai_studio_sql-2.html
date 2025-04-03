@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Query Utility</title>
+  <style>
+    /* Basic Reset & Common Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.2em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4em;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+
+    /* Button Styles */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 1em;
+      flex: 1 0 auto;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button.copy-button {
+      background-color: #2ecc71;
+      flex-grow: 0;
+    }
+    button.copy-button:hover {
+      background-color: #27ae60;
+    }
+
+    /* Result Display */
+    .result-display {
+      margin-top: 1em;
+      padding: 1em;
+      background-color: #ecf0f1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      .button-group {
+        flex-direction: column;
+      }
+      button.copy-button {
+        margin-top: 5px;
+      }
+    }
+
+    /* Visually Hidden Class (for accessibility) */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Location Query Generator -->
+  <section class="section">
+    <h3>Location Query Generator</h3>
+    <div class="form-group">
+      <label for="locationNumber">Location Number:</label>
+      <input type="text" id="locationNumber" placeholder="Enter location number">
+    </div>
+    <div class="button-group">
+      <button onclick="generateLocationQuery()">Generate Query</button>
+      <button onclick="copyToClipboard('queryResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="queryResult" class="result-display"></pre>
+  </section>
+
+  <!-- Location Group Query -->
+  <section class="section">
+    <h3>Location Group Query</h3>
+    <div class="form-group">
+      <label for="locationNumberInput">Location Group Number:</label>
+      <input type="text" id="locationNumberInput">
+    </div>
+    <div class="button-group">
+      <button onclick="generateQueryString()">Generate Query</button>
+      <button onclick="copyToClipboard('result2')" class="copy-button">Copy</button>
+    </div>
+    <pre id="result2" class="result-display"></pre>
+  </section>
+
+  <!-- Building Names Lookup -->
+  <section class="section">
+    <h3>Building Names Lookup</h3>
+    <div class="form-group">
+      <label for="buildingNumbersInput">Building Numbers (comma-separated):</label>
+      <input type="text" id="buildingNumbersInput" placeholder="e.g., 139, 140, 141">
+    </div>
+    <div class="button-group">
+      <button onclick="showBuildingNames()">Show Building Names</button>
+      <button onclick="copyToClipboard('buildingNamesResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="buildingNamesResult" class="result-display"></pre>
+  </section>
+
+  <!-- Mobile Error Query -->
+  <section class="section">
+    <h3>Mobile Error Query</h3>
+    <div class="form-group">
+      <label for="pidInput">PID Number:</label>
+      <input type="number" id="pidInput" min="1" step="1">
+    </div>
+    <div class="button-group">
+      <button onclick="generateMobileErrorQuery()">Generate Query</button>
+      <button onclick="copyToClipboard('mobileErrorQueryResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="mobileErrorQueryResult" class="result-display"></pre>
+  </section>
+
+  <!-- Update Student Status -->
+  <section class="section">
+    <h3>Update Student Status</h3>
+    <div class="form-group">
+      <label for="patronIdInput">Patron ID:</label>
+      <input type="number" id="patronIdInput" min="1" step="1">
+    </div>
+    <div class="form-group">
+      <label for="studentStatusSelect">Student Status:</label>
+      <select id="studentStatusSelect">
+        <option value="G">Graduate (G)</option>
+        <option value="U">Undergraduate (U)</option>
+      </select>
+    </div>
+    <div class="button-group">
+      <button onclick="generateSQLQuery()">Generate SQL Query</button>
+      <button onclick="copyToClipboard('sqlQueryResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="sqlQueryResult" class="result-display"></pre>
+  </section>
+
+  <!-- Meal Plan Chronological Duplicate -->
+  <section class="section">
+    <h3>Meal Plan Chronological Duplicate</h3>
+    <div class="button-group">
+      <button onclick="copyToClipboard('mealPlanQueryResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="mealPlanQueryResult" class="result-display">
+SET NEWPAGE 0
+SET SPACE 0
+SET LINESIZE 999
+SET PAGESIZE 0
+SET VERIFY OFF
+SET HEADING OFF
+SET MARKUP HTML OFF SPOOL OFF
+SET FEEDBACK OFF
+SET SERVEROUTPUT ON
+SET TRIMSPOOL ON
+SET TIMING OFF
+SET ECHO OFF
+SPOOL d:\cbord\patronswithmultipleplans.txt
+
+SELECT
+    K.KEYVALUE || '|' ||
+    I.FIRSTNAME || '|' ||
+    I.LASTNAME || '|' ||
+    P.MEALPLANDESIGNATION || '|' ||
+    '1.' || '|' ||
+    '.' || '|' ||
+    P.MEALPLANDESIGNATION || '|' ||
+    '-1' || '|' ||
+    TO_CHAR(
+      (SELECT MAX(T.TRANDATE)
+         FROM DIEBOLD.MEALPLANTRANLEDG_RV T
+         WHERE T.PATRONID = P.PATRONID
+           AND T.MEALPLANDESIGNATION = P.MEALPLANDESIGNATION
+           AND T.LOCATION = 9999
+           AND T.TRANDATE BETWEEN TO_DATE('2025-01-01','YYYY-MM-DD')
+                            AND SYSDATE
+      ),
+      'DD-MON-YYYY'
+    ) || '|' ||
+    TO_CHAR(
+      (SELECT MAX(T.TRANDATE)
+         FROM DIEBOLD.MEALPLANTRANLEDG_RV T
+         WHERE T.PATRONID = P.PATRONID
+           AND T.MEALPLANDESIGNATION = P.MEALPLANDESIGNATION
+           AND T.LOCATION = 9999
+           AND T.TRANDATE BETWEEN TO_DATE('2025-01-01','YYYY-MM-DD')
+                            AND SYSDATE
+      ),
+      'HH24:MI:SS'
+    ) || '|' ||
+    ROW_NUMBER() OVER (
+        PARTITION BY I.PATRONID
+        ORDER BY
+          (SELECT MAX(T.TRANDATE)
+           FROM DIEBOLD.MEALPLANTRANLEDG_RV T
+           WHERE T.PATRONID = P.PATRONID
+             AND T.MEALPLANDESIGNATION = P.MEALPLANDESIGNATION
+             AND T.LOCATION = 9999
+             AND T.TRANDATE BETWEEN TO_DATE('2025-01-01','YYYY-MM-DD')
+                              AND SYSDATE
+          ) DESC
+    )
+FROM
+    DIEBOLD.PATRONMEALPLANS P
+    INNER JOIN DIEBOLD.PATRONINFO I
+        ON P.PATRONID = I.PATRONID
+    INNER JOIN DIEBOLD.MEALPLANINFO_V MI
+        ON P.MEALPLANDESIGNATION = MI.MEALPLANDESIGNATION
+    INNER JOIN DIEBOLD.KEYMAPPINGINFO K
+        ON I.PATRONID = K.PATRONID
+WHERE
+    P.PATRONID IN (
+         SELECT UNIQUE(a.PATRONID)
+         FROM DIEBOLD.PATRONMEALPLANS a, DIEBOLD.PATRONMEALPLANS b
+         WHERE a.PATRONID = b.PATRONID
+           AND a.MEALPLANDESIGNATION NOT IN ('GP','CF30','12')
+           AND b.MEALPLANDESIGNATION NOT IN ('GP','CF30','12')
+           AND (
+                NOT (a.MEALPLANDESIGNATION = b.MEALPLANDESIGNATION)
+                OR (
+                     (a.MEALPLANDESIGNATION = b.MEALPLANDESIGNATION)
+                     AND NOT (a.UNIQUEKEY = b.UNIQUEKEY)
+                )
+           )
+    )
+    AND K.MEDIATYPE = '-1'
+    AND P.MEALPLANDESIGNATION NOT IN ('GP','CF30','12')
+ORDER BY
+    K.KEYVALUE,
+    (SELECT MAX(T.TRANDATE)
+       FROM DIEBOLD.MEALPLANTRANLEDG_RV T
+       WHERE T.PATRONID = P.PATRONID
+         AND T.MEALPLANDESIGNATION = P.MEALPLANDESIGNATION
+         AND T.LOCATION = 9999
+         AND T.TRANDATE BETWEEN TO_DATE('2025-01-01','YYYY-MM-DD')
+                          AND SYSDATE
+    );
+
+SPOOL OFF;
+    </pre>
+  </section>
+</div>
+
+<script>
+  // Consolidated copy function (handles errors and uses modern Clipboard API)
+  function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    if (!text) {
+      console.error("Element with ID '" + elementId + "' not found or has no text.");
+      alert("Error: Could not copy text. Please try again.");
+      return;
+    }
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        alert("Copied to clipboard!");
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          alert("Copied to clipboard (using fallback method)!");
+        } catch (err2) {
+          console.error("Fallback copy failed!", err2);
+          alert("Could not copy text.  Please copy manually.");
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      });
+  }
+
+  function generateString() {
+    const xValue = document.getElementById('numberInput').value;
+    const queryString = `Select GROUPID,LOCATION,ACCESSLEVEL,THELEVEL From LOCATION_ADMINEXPANDEDTAB where LOCATION = '${xValue}';`;
+    document.getElementById('result1').innerText = queryString;
+  }
+
+  function generateQueryString() {
+    const locationNumber = document.getElementById('locationNumberInput').value;
+    const queryString = `Select GROUPID,LOCATION,LOCGRPID,ACCESSLEVEL,THELEVEL From LOCATION_ADMINEXPANDEDTAB where LOCGRPID = '${locationNumber}';`;
+    document.getElementById('result2').innerText = queryString;
+  }
+
+  const buildingMap = {
+    '-1': 'Gold Admin',
+    '1': 'Report - Wells Fargo',
+    '2': 'IDOffice',
+    '3': 'Cashier - Read Only',
+    '4': 'ARA Cafe',
+    '10': 'Door - Template',
+    '12': 'Payroll',
+    '13': 'ARA Conf',
+    '15': 'Door - SLC',
+    '16': 'Door - Truett',
+    '17': 'Door - HSB 211',
+    '18': 'Door - HSB Faculty Lounge',
+    '19': 'Door - Carol Library',
+    '20': 'Door - Communications',
+    '21': 'Door - ITS Labs',
+    '22': 'Door - Riddle',
+    '23': 'Door - Art',
+    '24': 'Door - Jones Library',
+    '25': 'Door - HSB Grad',
+    '26': 'Door - McCrary',
+    '27': 'Door - Dorms',
+    '28': 'Door - ITS All',
+    '29': 'Door - Journalism',
+    '30': 'Door - Family & Consumer Scien',
+    '31': 'Door - AB Library',
+    '32': 'Door - Law',
+    '33': 'Door - Religion',
+    '37': 'Door - Public Relations',
+    '38': 'Door - Political Science',
+    '39': 'Door - Education',
+    '40': 'Door - Environmental Studies',
+    '41': 'Door - Psychology',
+    '42': 'Door - Personnel',
+    '43': 'Door - ECS Admin',
+    '44': 'Door - MFL',
+    '47': 'Report - Ticket Office',
+    '48': 'Door - HSB Casey CC',
+    '49': 'Door - Museum',
+    '50': 'Door - DPS',
+    '51': 'Bookstore',
+    '52': 'Door - Biology',
+    '53': 'Door - Chemistry',
+    '54': 'Door - Geology',
+    '55': 'Door - PsyNeuro',
+    '56': 'Door - Physics',
+    '57': 'Report - Chapel',
+    '58': 'Door - Science Facility Serv',
+    '59': 'Door - Drug Discovery Center',
+    '60': 'Door - Science Stockroom',
+    '61': 'Door - Research Support',
+    '63': 'HousingGoldInterface',
+    '64': 'Door - President\'s Office',
+    '65': 'Door - Provost Office',
+    '66': 'Door - General Counsel Office',
+    '67': 'Door - Athletic Facilities',
+    '68': 'Door - Student Foundation',
+    '69': 'Atkinson Group',
+    '70': 'Door - Statistics',
+    '71': 'Door - Dining Services',
+    '72': 'Door - PLFSC',
+    '73': 'Door - Math Sid Rich',
+    '74': 'Door - CASA',
+    '75': 'Atkinson-Group-Test',
+    '76': 'Door - HSB Curb Center',
+    '77': 'Door - HSB Real Estate',
+    '78': 'DBLink - Banner',
+    '79': 'Door - Russell Gym',
+    '80': 'Door - Science Video Conf.',
+    '81': 'Template - No Access',
+    '82': 'Door - ECS User',
+    '83': 'Door - ECS-NVCC',
+    '84': 'Door - McMullen Faculty Center',
+    '85': 'Door - HSB ISY',
+    '86': 'Door - Science Security',
+    '87': 'Door - Pre Health',
+    '88': 'Door - BDSC',
+    '89': 'Door - Photography',
+    '90': 'Default Web Group',
+    '91': 'FDesk_NV',
+    '92': 'FDesk_Allen_Dawson',
+    '93': 'FDesk_Alex_Mem',
+    '94': 'FDesk_Kokernot',
+    '95': 'FDesk_Martin',
+    '96': 'FDesk_Penland',
+    '97': 'FDesk_Arbors',
+    '98': 'FDesk_BC',
+    '99': 'FDesk_BF',
+    '100': 'FDesk_Collins',
+    '101': 'FDesk_NRussell',
+    '102': 'FDesk_SR',
+    '103': 'CLL_PIN_Enabled',
+    '104': 'Door - Theatre',
+    '105': 'Door - MMS Anthropology',
+    '106': 'Door - Harrington House',
+    '107': 'Door - SLC Health Center',
+    '108': 'Door - Res Halls',
+    '109': 'Report - Aramark Retail Dining',
+    '110': 'Report - Truett Attendance',
+    '111': 'Door - Sociology',
+    '112': 'Door - HHPR Marrs McLean',
+    '113': 'Door - HHPR Labs',
+    '114': 'Report - Accounting',
+    '115': 'Door - Conf & Event Mgmt',
+    '116': 'Door - Burleson School of Ed',
+    '117': 'Door - Social Work',
+    '118': 'Door - Marrs McLean Sci 132',
+    '119': 'Door - Cashiers',
+    '120': 'Door - Risk Management',
+    '121': 'Door - Parking Services',
+    '122': 'Door - Draper LAC',
+    '123': 'Door - Student Fin Aid',
+    '124': 'BUPD - Dispatch',
+    '125': 'Door - Neil Morris',
+    '126': 'Report - SSEO',
+    '127': 'Door - Example',
+    '128': 'Cashier - Full Access',
+    '129': 'Door - CLL BF BC KO',
+    '130': 'Front_Desk_Unlock',
+    '131': 'CL&L-Conference',
+    '132': 'conf test',
+    '133': 'FDesk_Auto',
+    '134': 'Door - Martin House',
+    '135': 'Door - F&O Fac & Ops',
+    '136': 'Baylor Lock Installers',
+    '137': 'Door - BRIC',
+    '138': 'Door - CL&L',
+    '139': 'Door - BFS',
+    '140': 'Door - Arts & Sciences',
+    '141': 'Door - HNK 103',
+    '142': 'Door - MMS G-1',
+    '143': 'Door - MMS 2-3',
+    '144': 'Door - Acad Scheduling',
+    '145': 'Door - View All',
+    '146': 'Door - Earle Academic',
+    '147': 'Door - Teal Academic',
+    '148': 'SR Gold Admin',
+    '149': 'SSW - Ext Door Open',
+    '150': 'ITS - Test',
+    '151': 'Door - Mind and Body',
+    '152': 'Alarms - EV',
+    '153': 'Door - MLC',
+    '154': 'CBORD Test',
+    '155': 'Alarms - MST',
+    '156': 'Door - Psy Clinic',
+    '157': 'Door - SMG',
+    '158': 'Door - Waco Hall',
+    '159': 'Door - SR Swing',
+    '160': 'Aramark Dashboard',
+    '161': 'Door - Internal Aud',
+    '162': 'Emergency Management',
+    '163': 'Door - SMG(View Only)',
+    '164': 'iPad Reservations',
+    '165': 'Door - Sleep Lab',
+    '166': 'Door - Admissions',
+    '167': 'Door - UGrad Pgm',
+    '168': 'Door - Edu SRH',
+    '169': 'Door - Development',
+    '170': 'ANT OGW Forensics',
+    '171': 'Door Viewer - All Gen Access',
+    '172': 'Door - PP Plans',
+    '173': 'Door - ECS Hank/Cashion',
+    '174': 'Door - Health & Human Sciences',
+    '175': 'Doors - Communication Sciences',
+    '176': 'Door - Communication Sciences',
+    '177': 'Door - Aviation Sciences',
+    '178': 'Door - ATH Track & Field',
+    '179': 'Door - Foster',
+    '180': 'Door - CGE',
+    '181': 'Door - Waco Hall Events',
+    '182': 'Door - Title IX',
+    '183': 'Doors - Payroll',
+    '184': 'Door - SB Biology',
+    '185': 'Door - SB Chemistry',
+    '186': 'Door - SB Psychology',
+    '187': 'Door - SB Geology',
+    '188': 'Door - SB CRASR',
+    '189': 'Door - SB Env Sci',
+    '190': 'Door - SB Physics',
+    '191': 'Door - Carroll Science',
+    '192': 'Door - Judicial Affairs',
+    '193': 'Web - Location Actions',
+    '194': 'Door - BARC',
+    '195': 'Door - History',
+    '196': 'BUPD - Test Prop',
+    '197': 'Door - BUPD',
+    '198': 'Alarm-ITS',
+    '199': 'Door - Spirit Life',
+    '200': 'Door - Creekside Ste',
+    '201': 'BUPD - Investigation',
+    '202': 'Door - Ignite',
+    '203': 'Door - Student Success Closet',
+    '204': 'Door - Public Health',
+    '205': 'Door - ITS Classroom Tech',
+    '206': 'Door - Burleson Quad Ext',
+    '207': 'Door - Communications CC Ext',
+    '208': 'Door - Visitors Center',
+    '209': 'System Report - Exterior',
+    '210': 'System Report - Interior',
+    '211': 'System Report - Dining',
+    '212': 'System Report - SLC / Rec',
+    '213': 'System Report - Library',
+    '214': 'System Report - Events',
+    '215': 'System Report - Attendance',
+    '216': 'System Report - Res AD400',
+    '217': 'System Report - Other Locs',
+    '218': 'System Report - Misc',
+    '219': 'System Report - Extra',
+    '220': 'Door - Morrison Hall',
+    '221': 'Door - ROTC',
+    '222': 'Door - BFS Housekeeping',
+    '223': 'Door - BFS Facilities',
+    '224': 'Hankamer Cashion Security',
+    '225': 'Door - BRIC Provost',
+    '226': 'Door- Texas Hunger Initiative',
+    '227': 'Door - Texas Hunger Initiative',
+    '228': 'Door - AFROTC',
+    '229': 'Door - AROTC',
+    '230': 'IDOffice Print',
+    '231': 'Door - SBP Vivarium',
+    '232': 'Door - Bookstore',
+    '233': 'Door - BBK Baylor Bookstore',
+    '234': 'Door - Piper Child Dev',
+    '235': 'Door - UParks Apt Gate',
+    '236': 'Door - HHPR MMG Labs',
+    '237': 'Door - Testing Template Copy',
+    '238': 'Door - SB MBC',
+    '239': 'Door - SB CMI',
+    '240': 'Door - SR UA',
+    '241': 'Door - SB NMR',
+    '242': 'Door - SB NMR Lab a',
+    '243': 'Door - SB NMR Fac',
+    '244': 'Door - CL&L Honors',
+    '245': 'Door - FM&C',
+    '246': 'Door - Cashion 4th Suites',
+    '247': 'Door - Security',
+    '248': 'Door - SB IA',
+    '249': 'Door - Tidwell Exterior',
+    '250': 'Door - Dining Serv MED',
+    '251': 'Door - OVPR',
+    '252': 'Door - Foster Limited',
+    '253': 'Door - Financial Serv',
+    '254': 'Door - HWC Hurd Ext',
+    '255': 'Door - HWC Admissions',
+    '256': 'Door - HWC Alumni',
+    '257': 'Door - WSH 600',
+    '258': 'Door - CL&L EV',
+    '259': 'Door - NSP EV',
+    '260': 'Door - WSH OT/PT',
+    '261': 'Door - Academic Affairs',
+    '262': 'Door - SB Mass Spectrometry',
+    '263': 'Door - HWC Admis Recruit Amb',
+    '264': 'Door - HWC Admis Campus Visits',
+    '265': 'Door - Wiethorn',
+    '266': 'Door - Foster Pavilion',
+    '267': 'Door - Bear Retirement',
+    '268': 'Door - Draper Honors College',
+    '269': 'Door - Registrar',
+    '270': 'Config Admin',
+    // New doors added below
+    '271': 'Door - Dining BANC',
+    '272': 'Door - NVCC',
+    '273': 'Door - ELC Production',
+    '274': 'Door - Investments',
+    '275': 'Door - Budget',
+    '276': 'Door - ELC'
+  };
+
+  function showBuildingNames() {
+    const input = document.getElementById('buildingNumbersInput').value;
+    const buildingNumbers = input.split(',').map(num => num.trim());
+    const buildingNames = buildingNumbers.map(num => buildingMap[num] || 'Unknown Building').join('\n');
+    document.getElementById('buildingNamesResult').innerText = buildingNames;
+  }
+
+  function generateSQLQuery() {
+    const patronId = document.getElementById('patronIdInput').value;
+    const studentStatus = document.getElementById('studentStatusSelect').value;
+    const sqlQuery = `update extendedpatroninfotab set local_stu_status='${studentStatus}' where patronid=${patronId};`;
+    document.getElementById('sqlQueryResult').innerText = sqlQuery;
+  }
+
+  function generateLocationQuery() {
+    const locationNumber = document.getElementById('locationNumber').value.trim();
+    if (!locationNumber) {
+      alert('Please enter a location number.');
+      return;
+    }
+    const query = `SELECT LISTAGG(GROUPID, ',') WITHIN GROUP (ORDER BY GROUPID) AS GROUPID_LIST
+FROM (
+    SELECT GROUPID
+    FROM LOCATION_ADMINEXPANDEDTAB
+    WHERE LOCATION = '${locationNumber}'
+);`;
+    document.getElementById('queryResult').textContent = query;
+  }
+
+  function generateMobileErrorQuery() {
+    const pid = document.getElementById('pidInput').value;
+    if (!pid) {
+      alert('Please enter a PID Number.');
+      return;
+    }
+    const query = `select * from mc_provisioning_requests where patronid=${pid} order by create_date;`;
+    document.getElementById('mobileErrorQueryResult').innerText = query;
+  }
+</script>
+
+</body>
+</html>
