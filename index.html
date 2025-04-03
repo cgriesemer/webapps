@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Web Apps Landing Page</title>
+  <title>Web Apps Dashboard</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Boxicons for icons -->
@@ -15,92 +15,13 @@
       padding: 0;
     }
     
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #74ABE2, #5563DE);
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
-    }
-    
-    @keyframes gradient {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-    
-    .container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 3rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      max-width: 600px;
-      width: 100%;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .container::before {
-      content: "";
-      position: absolute;
-      top: -50px;
-      left: -50px;
-      width: 100px;
-      height: 100px;
-      background: rgba(85, 99, 222, 0.1);
-      border-radius: 50%;
-      z-index: -1;
-    }
-    
-    .container::after {
-      content: "";
-      position: absolute;
-      bottom: -50px;
-      right: -50px;
-      width: 120px;
-      height: 120px;
-      background: rgba(116, 171, 226, 0.1);
-      border-radius: 50%;
-      z-index: -1;
-    }
-    
-    h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: #2d2d2d;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2.5rem;
-      color: #666;
-      font-weight: 300;
-      line-height: 1.6;
-    }
-    
     .apps-list {
       list-style: none;
       padding: 0;
       margin: 0;
       display: grid;
       gap: 1rem;
+      margin-bottom: 1.5rem;
     }
     
     .app-item {
@@ -135,8 +56,119 @@
       box-shadow: 0 6px 15px rgba(85, 99, 222, 0.2);
     }
     
-    .app-link i {
-      font-size: 1.2rem;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #2d2d2d;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logo i {
+      color: #5563DE;
+      font-size: 1.75rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    
+    .nav-link {
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background: rgba(85, 99, 222, 0.1);
+      color: #5563DE;
+    }
+    
+    .nav-link i {
+      margin-right: 0.5rem;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+    }
+    
+    .welcome-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2d2d2d;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+      color: #666;
+      font-weight: 300;
+      line-height: 1.6;
     }
     
     .header-decoration {
@@ -148,42 +180,181 @@
     }
     
     .footer {
-      margin-top: 2.5rem;
+      padding: 1rem;
+      text-align: center;
       font-size: 0.9rem;
-      color: #888;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: auto;
+    }
+    
+    .iframe-container {
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 120px);
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: none;
+    }
+    
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .nav-link {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .nav-link i {
+        margin-right: 0;
+      }
+      
+      .iframe-container {
+        height: calc(100vh - 170px);
+      }
+      
+      .welcome-container {
+        padding: 2rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Griz Apps</h1>
-    <div class="header-decoration"></div>
-    <p>Select one of your web applications below to get started with your project</p>
-    
-    <ul class="apps-list">
-      <li class="app-item">
-        <a href="FLASH-PARSER.html" class="app-link">
-          <i class='bx bx-analyse'></i>
-          Mean Plan Parser
-        </a>
-      </li>
-      <li class="app-item">
-        <a href="ai_studio_sql-2.html" class="app-link">
-          <i class='bx bx-data'></i>
-          SQL Generator
-        </a>
-      </li>
-      <li class="app-item">
-        <a href="canned-admin.html" class="app-link">
-          <i class='bx bx-message-square-dots'></i>
-          IUG Admin Greeting Generator
-        </a>
-      </li>
-    </ul>
-    
-    <div class="footer">
-      Choose an application to begin your workflow
+  <header class="header">
+    <div class="logo">
+      <i class='bx bx-cube-alt'></i>
+      <span>Web Apps Dashboard</span>
     </div>
-  </div>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link active" data-page="" onclick="showWelcome()">
+        <i class='bx bx-home'></i><span class="nav-text">Home</span>
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="FLASH-PARSER.html" onclick="loadPage(this)">
+        <i class='bx bx-analyse'></i><span class="nav-text">Mean Plan Parser</span>
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="ai_studio_sql-2.html" onclick="loadPage(this)">
+        <i class='bx bx-data'></i><span class="nav-text">SQL Generator</span>
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="canned-admin.html" onclick="loadPage(this)">
+        <i class='bx bx-message-square-dots'></i><span class="nav-text">Admin Greeting</span>
+      </a></li>
+    </ul>
+  </header>
+  
+  <main class="main-content">
+    <div class="welcome-container" id="welcome">
+      <h1>Griz Apps</h1>
+      <div class="header-decoration"></div>
+      <p>Use the navigation menu above or select an application below to get started:</p>
+      
+      <ul class="apps-list">
+        <li class="app-item">
+          <a href="#" class="app-link" onclick="loadPageFromButton('FLASH-PARSER.html')">
+            <i class='bx bx-analyse'></i>
+            Mean Plan Parser
+          </a>
+        </li>
+        <li class="app-item">
+          <a href="#" class="app-link" onclick="loadPageFromButton('ai_studio_sql-2.html')">
+            <i class='bx bx-data'></i>
+            SQL Generator
+          </a>
+        </li>
+        <li class="app-item">
+          <a href="#" class="app-link" onclick="loadPageFromButton('canned-admin.html')">
+            <i class='bx bx-message-square-dots'></i>
+            IUG Admin Greeting Generator
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="iframe-container" id="app-frame-container">
+      <iframe id="app-frame" src="" title="Application Frame"></iframe>
+    </div>
+  </main>
+  
+  <footer class="footer">
+    Web Apps Dashboard © 2025
+  </footer>
+  
+  <script>
+    // Function to load a page into the iframe
+    function loadPage(element) {
+      // Update active nav link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      element.classList.add('active');
+      
+      // Get the page URL from data attribute
+      const pageUrl = element.getAttribute('data-page');
+      
+      // Hide welcome screen and show iframe
+      document.getElementById('welcome').style.display = 'none';
+      const frameContainer = document.getElementById('app-frame-container');
+      frameContainer.style.display = 'block';
+      
+      // Set iframe source
+      document.getElementById('app-frame').src = pageUrl;
+    }
+    
+    // Function to load a page from welcome screen buttons
+    function loadPageFromButton(pageUrl) {
+      // Update active nav link based on the page being loaded
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-page') === pageUrl) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Hide welcome screen and show iframe
+      document.getElementById('welcome').style.display = 'none';
+      const frameContainer = document.getElementById('app-frame-container');
+      frameContainer.style.display = 'block';
+      
+      // Set iframe source
+      document.getElementById('app-frame').src = pageUrl;
+    }
+    
+    // Function to show welcome screen
+    function showWelcome() {
+      // Update active nav link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector('[data-page=""]').classList.add('active');
+      
+      // Show welcome screen and hide iframe
+      document.getElementById('welcome').style.display = 'block';
+      document.getElementById('app-frame-container').style.display = 'none';
+      
+      // Clear iframe source
+      document.getElementById('app-frame').src = '';
+    }
+  </script>
 </body>
 </html>
