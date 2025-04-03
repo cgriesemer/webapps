@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Web Apps Dashboard</title>
+  <title>Griz Apps Dashboard</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Boxicons for icons -->
@@ -187,10 +187,10 @@
       margin-top: auto;
     }
     
+    /* Updated iframe container to use flexible height */
     .iframe-container {
       flex: 1;
       width: 100%;
-      height: calc(100vh - 120px);
       border-radius: 16px;
       overflow: hidden;
       background: white;
@@ -227,10 +227,6 @@
         margin-right: 0;
       }
       
-      .iframe-container {
-        height: calc(100vh - 170px);
-      }
-      
       .welcome-container {
         padding: 2rem;
       }
@@ -245,27 +241,39 @@
   <header class="header">
     <div class="logo">
       <i class='bx bx-cube-alt'></i>
-      <span>Web Apps Dashboard</span>
+      <span>Griz Apps Dashboard</span>
     </div>
     <ul class="nav-links">
-      <li><a href="#" class="nav-link active" data-page="" onclick="showWelcome()">
-        <i class='bx bx-home'></i><span class="nav-text">Home</span>
-      </a></li>
-      <li><a href="#" class="nav-link" data-page="FLASH-PARSER.html" onclick="loadPage(this)">
-        <i class='bx bx-analyse'></i><span class="nav-text">Mean Plan Parser</span>
-      </a></li>
-      <li><a href="#" class="nav-link" data-page="ai_studio_sql-2.html" onclick="loadPage(this)">
-        <i class='bx bx-data'></i><span class="nav-text">SQL Generator</span>
-      </a></li>
-      <li><a href="#" class="nav-link" data-page="canned-admin.html" onclick="loadPage(this)">
-        <i class='bx bx-message-square-dots'></i><span class="nav-text">Admin Greeting</span>
-      </a></li>
+      <li>
+        <a href="#" class="nav-link active" data-page="" onclick="showWelcome()">
+          <i class='bx bx-home'></i>
+          <span class="nav-text">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="FLASH-PARSER.html" onclick="loadPage(this)">
+          <i class='bx bx-analyse'></i>
+          <span class="nav-text">Mean Plan Parser</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="ai_studio_sql-2.html" onclick="loadPage(this)">
+          <i class='bx bx-data'></i>
+          <span class="nav-text">SQL Generator</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="canned-admin.html" onclick="loadPage(this)">
+          <i class='bx bx-message-square-dots'></i>
+          <span class="nav-text">Admin Greeting</span>
+        </a>
+      </li>
     </ul>
   </header>
   
   <main class="main-content">
     <div class="welcome-container" id="welcome">
-      <h1>Griz Apps</h1>
+      <h1>Welcome to Griz Apps</h1>
       <div class="header-decoration"></div>
       <p>Use the navigation menu above or select an application below to get started:</p>
       
@@ -297,7 +305,7 @@
   </main>
   
   <footer class="footer">
-    Web Apps Dashboard © 2025
+    Griz Apps Dashboard © 2025
   </footer>
   
   <script>
