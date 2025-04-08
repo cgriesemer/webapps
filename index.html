@@ -20,6 +20,12 @@
       margin: 0;
       padding: 0;
     }
+    
+    /* Remove default link styles for logo */
+    .logo-link {
+      text-decoration: none;
+      color: inherit;
+    }
 
     /* Body & Layout */
     body {
@@ -108,8 +114,8 @@
       display: flex;
       flex-direction: column;
       padding: 1rem;
-      /* Add this to ensure main content fills the entire vertical space */
-      height: calc(100vh - 130px); /* Subtracting approx header + footer height */
+      /* Ensures main content fills the entire vertical space */
+      height: calc(100vh - 130px); /* Approximate header + footer height */
     }
 
     .welcome-container {
@@ -189,7 +195,7 @@
       box-shadow: 0 6px 15px rgba(85, 99, 222, 0.2);
     }
 
-    /* Iframe Container - UPDATED for better space usage */
+    /* Iframe Container - for better space usage */
     .iframe-container {
       flex: 1;
       display: none; /* Hidden until user selects an app */
@@ -199,10 +205,9 @@
       background: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      /* Make sure it takes full height of its parent */
       height: 100%;
       min-height: 500px; /* Ensure a minimum height */
-      position: relative; /* Added for proper iframe positioning */
+      position: relative; /* For proper iframe positioning */
     }
 
     iframe {
@@ -252,7 +257,6 @@
         font-size: 2rem;
       }
       
-      /* Adjust main content height for mobile */
       .main-content {
         height: calc(100vh - 180px); /* Adjust for taller header on mobile */
       }
@@ -261,10 +265,12 @@
 </head>
 <body>
   <header class="header">
-    <div class="logo">
-      <i class="bx bx-cube-alt"></i>
-      <span>Griz Apps Dashboard</span>
-    </div>
+    <a href="#" class="logo-link" onclick="showWelcome()">
+      <div class="logo">
+        <i class="bx bx-cube-alt"></i>
+        <span>Griz Apps Dashboard</span>
+      </div>
+    </a>
     <ul class="nav-links">
       <li>
         <a href="#" class="nav-link active" data-page="" onclick="showWelcome()">
@@ -273,36 +279,27 @@
         </a>
       </li>
       <li>
-        <a
-          href="#"
-          class="nav-link"
-          data-page="FLASH-PARSER.html"
-          onclick="loadPage(this)"
-        >
+        <a href="#" class="nav-link" data-page="FLASH-PARSER.html" onclick="loadPage(this)">
           <i class="bx bx-analyse"></i>
           <span class="nav-text">Mean Plan Parser</span>
         </a>
       </li>
       <li>
-        <a
-          href="#"
-          class="nav-link"
-          data-page="ai_studio_sql-2.html"
-          onclick="loadPage(this)"
-        >
+        <a href="#" class="nav-link" data-page="ai_studio_sql-2.html" onclick="loadPage(this)">
           <i class="bx bx-data"></i>
           <span class="nav-text">SQL Generator</span>
         </a>
       </li>
       <li>
-        <a
-          href="#"
-          class="nav-link"
-          data-page="canned-admin.html"
-          onclick="loadPage(this)"
-        >
+        <a href="#" class="nav-link" data-page="canned-admin.html" onclick="loadPage(this)">
           <i class="bx bx-message-square-dots"></i>
           <span class="nav-text">Admin Greeting</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="mobile_query.html" onclick="loadPage(this)">
+          <i class="bx bx-mobile"></i>
+          <span class="nav-text">Mobile Errors</span>
         </a>
       </li>
     </ul>
@@ -316,33 +313,27 @@
 
       <ul class="apps-list">
         <li class="app-item">
-          <a
-            href="#"
-            class="app-link"
-            onclick="loadPageFromButton('FLASH-PARSER.html')"
-          >
+          <a href="#" class="app-link" onclick="loadPageFromButton('FLASH-PARSER.html')">
             <i class="bx bx-analyse"></i>
             Mean Plan Parser
           </a>
         </li>
         <li class="app-item">
-          <a
-            href="#"
-            class="app-link"
-            onclick="loadPageFromButton('ai_studio_sql-2.html')"
-          >
+          <a href="#" class="app-link" onclick="loadPageFromButton('ai_studio_sql-2.html')">
             <i class="bx bx-data"></i>
             SQL Generator
           </a>
         </li>
         <li class="app-item">
-          <a
-            href="#"
-            class="app-link"
-            onclick="loadPageFromButton('canned-admin.html')"
-          >
+          <a href="#" class="app-link" onclick="loadPageFromButton('canned-admin.html')">
             <i class="bx bx-message-square-dots"></i>
             IUG Admin Greeting Generator
+          </a>
+        </li>
+        <li class="app-item">
+          <a href="#" class="app-link" onclick="loadPageFromButton('mobile_query.html')">
+            <i class="bx bx-mobile"></i>
+            Mobile Errors
           </a>
         </li>
       </ul>
