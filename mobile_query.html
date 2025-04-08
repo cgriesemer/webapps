@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Error Query Tool</title>
+  <style>
+    /* Basic Reset & Common Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.2em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4em;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+
+    /* Button Styles */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 1em;
+      flex: 1 0 auto;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button.copy-button {
+      background-color: #2ecc71;
+      flex-grow: 0;
+    }
+    button.copy-button:hover {
+      background-color: #27ae60;
+    }
+
+    /* Result Display */
+    .result-display {
+      margin-top: 1em;
+      padding: 1em;
+      background-color: #ecf0f1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      .button-group {
+        flex-direction: column;
+      }
+      button.copy-button {
+        margin-top: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Mobile Error Query -->
+  <section class="section">
+    <h3>Mobile Error Query</h3>
+    <div class="form-group">
+      <label for="pidInput">PID Number:</label>
+      <input type="number" id="pidInput" min="1" step="1">
+    </div>
+    <div class="button-group">
+      <button onclick="generateMobileErrorQuery()">Generate Query</button>
+      <button onclick="copyToClipboard('mobileErrorQueryResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="mobileErrorQueryResult" class="result-display"></pre>
+  </section>
+</div>
+
+<script>
+  // Copy to clipboard function
+  function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    if (!text) {
+      console.error("Element with ID '" + elementId + "' not found or has no text.");
+      alert("Error: Could not copy text. Please try again.");
+      return;
+    }
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        alert("Copied to clipboard!");
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          alert("Copied to clipboard (using fallback method)!");
+        } catch (err2) {
+          console.error("Fallback copy failed!", err2);
+          alert("Could not copy text. Please copy manually.");
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      });
+  }
+
+  // Generate Mobile Error Query
+  function generateMobileErrorQuery() {
+    const pid = document.getElementById('pidInput').value;
+    if (!pid) {
+      alert('Please enter a PID Number.');
+      return;
+    }
+    const query = `select * from mc_provisioning_requests where patronid=${pid} order by create_date;`;
+    document.getElementById('mobileErrorQueryResult').innerText = query;
+  }
+</script>
+
+</body>
+</html>
