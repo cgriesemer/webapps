@@ -44,14 +44,16 @@
 
     input[type="text"],
     input[type="number"],
-    select {
+    input[type="date"], /* Added for the new date input */
+    select,
+    textarea { /* Added for the new textarea */
       width: 100%;
       padding: 10px;
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5em; /* Adjusted from your form's margin-top for consistency */
       border: 1px solid #ddd;
       border-radius: 4px;
       box-sizing: border-box;
-      font-size: 1em;
+      font-size: 1em; /* Adjusted from your form's 16px for consistency */
     }
 
     /* Button Styles */
@@ -62,15 +64,17 @@
     }
 
     button {
-      padding: 10px 15px;
+      padding: 10px 15px; /* Adjusted from your form's padding for consistency */
       background-color: #3498db;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      font-size: 1em;
-      flex: 1 0 auto;
+      font-size: 1em; /* Adjusted from your form's 16px for consistency */
+      flex: 1 0 auto; /* To match existing buttons */
+      /* width: 100%; Removed from your button style as existing buttons use flex */
+      /* margin-top: 10px; Removed from your button style, handled by button-group or direct styling if needed */
     }
 
     button:hover {
@@ -87,12 +91,12 @@
 
     /* Result Display */
     .result-display {
-      margin-top: 1em;
-      padding: 1em;
-      background-color: #ecf0f1;
-      border: 1px solid #ddd;
+      margin-top: 1em; /* Adjusted from your form's margin-top for consistency */
+      padding: 1em; /* Adjusted from your form's padding for consistency */
+      background-color: #ecf0f1; /* Adjusted from your form's #f4f4f4 for consistency */
+      border: 1px solid #ddd; /* Adjusted from your form's #ccc for consistency */
       border-radius: 4px;
-      white-space: pre-wrap;
+      white-space: pre-wrap; /* Changed from pre to pre-wrap for consistency */
       word-wrap: break-word;
       font-family: 'Courier New', Courier, monospace;
       font-size: 0.9em;
@@ -129,7 +133,6 @@
 
 <div class="container">
 
-  <!-- Location Query Generator -->
   <section class="section">
     <h3>Location Query Generator</h3>
     <div class="form-group">
@@ -143,7 +146,6 @@
     <pre id="queryResult" class="result-display"></pre>
   </section>
 
-  <!-- Location Group Query -->
   <section class="section">
     <h3>Location Group Query</h3>
     <div class="form-group">
@@ -151,13 +153,11 @@
       <input type="text" id="locationNumberInput">
     </div>
     <div class="button-group">
-      <button onclick="generateQueryString()">Generate Query</button>
-      <button onclick="copyToClipboard('result2')" class="copy-button">Copy</button>
+      <button onclick="generateLocationGroupQuery()">Generate Query</button> <button onclick="copyToClipboard('result2')" class="copy-button">Copy</button>
     </div>
     <pre id="result2" class="result-display"></pre>
   </section>
 
-  <!-- Building Names Lookup -->
   <section class="section">
     <h3>Building Names Lookup</h3>
     <div class="form-group">
@@ -171,7 +171,6 @@
     <pre id="buildingNamesResult" class="result-display"></pre>
   </section>
 
-  <!-- Mobile Error Query -->
   <section class="section">
     <h3>Mobile Error Query</h3>
     <div class="form-group">
@@ -185,7 +184,6 @@
     <pre id="mobileErrorQueryResult" class="result-display"></pre>
   </section>
 
-  <!-- Update Student Status -->
   <section class="section">
     <h3>Update Student Status</h3>
     <div class="form-group">
@@ -200,13 +198,27 @@
       </select>
     </div>
     <div class="button-group">
-      <button onclick="generateSQLQuery()">Generate SQL Query</button>
-      <button onclick="copyToClipboard('sqlQueryResult')" class="copy-button">Copy</button>
+      <button onclick="generateUpdateStudentSQLQuery()">Generate SQL Query</button> <button onclick="copyToClipboard('sqlQueryResult')" class="copy-button">Copy</button>
     </div>
     <pre id="sqlQueryResult" class="result-display"></pre>
   </section>
 
-  <!-- Meal Plan Chronological Duplicate -->
+  <section class="section">
+    <h3>Keep Active Generator</h3>
+    <div class="form-group">
+      <label for="keepActiveIds">Enter ID Numbers (one per line or comma-separated):</label>
+      <textarea id="keepActiveIds" rows="10" placeholder="e.g. 89231985, 892268557"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="keepActiveDate">Select Date to Keep Active Through:</label>
+      <input type="date" id="keepActiveDate">
+    </div>
+    <div class="button-group">
+        <button onclick="generateKeepActiveSQL()">Generate SQL</button>
+        <button onclick="copyToClipboard('keepActiveOutput')" class="copy-button">Copy</button>
+    </div>
+    <pre id="keepActiveOutput" class="result-display"></pre> </section>
+
   <section class="section">
     <h3>Meal Plan Chronological Duplicate</h3>
     <div class="button-group">
@@ -315,19 +327,21 @@ SPOOL OFF;
   // Consolidated copy function (handles errors and uses modern Clipboard API)
   function copyToClipboard(elementId) {
     const text = document.getElementById(elementId).innerText;
-    if (!text) {
-      console.error("Element with ID '" + elementId + "' not found or has no text.");
-      alert("Error: Could not copy text. Please try again.");
+    if (!text && !(document.getElementById(elementId).value && document.getElementById(elementId).value.length > 0) ) { // Check if pre or textarea
+      console.warn("Element with ID '" + elementId + "' not found or has no text/value."); // Warn instead of error for potentially empty outputs
+      alert("Nothing to copy.");
       return;
     }
-    navigator.clipboard.writeText(text)
+    const textToCopy = text || document.getElementById(elementId).value; // Use value if innerText is empty (for textarea)
+
+    navigator.clipboard.writeText(textToCopy)
       .then(() => {
         alert("Copied to clipboard!");
       })
       .catch(err => {
         console.error('Failed to copy: ', err);
         const textarea = document.createElement("textarea");
-        textarea.value = text;
+        textarea.value = textToCopy;
         document.body.appendChild(textarea);
         textarea.select();
         try {
@@ -335,24 +349,42 @@ SPOOL OFF;
           alert("Copied to clipboard (using fallback method)!");
         } catch (err2) {
           console.error("Fallback copy failed!", err2);
-          alert("Could not copy text.  Please copy manually.");
+          alert("Could not copy text. Please copy manually.");
         } finally {
           document.body.removeChild(textarea);
         }
       });
   }
 
-  function generateString() {
-    const xValue = document.getElementById('numberInput').value;
-    const queryString = `Select GROUPID,LOCATION,ACCESSLEVEL,THELEVEL From LOCATION_ADMINEXPANDEDTAB where LOCATION = '${xValue}';`;
-    document.getElementById('result1').innerText = queryString;
+  // Renamed to avoid conflict with the new form's function
+  function generateUpdateStudentSQLQuery() {
+    const patronId = document.getElementById('patronIdInput').value;
+    const studentStatus = document.getElementById('studentStatusSelect').value;
+    const sqlQuery = `update extendedpatroninfotab set local_stu_status='${studentStatus}' where patronid=${patronId};`;
+    document.getElementById('sqlQueryResult').innerText = sqlQuery;
   }
 
-  function generateQueryString() {
+  function generateLocationQuery() {
+    const locationNumber = document.getElementById('locationNumber').value.trim();
+    if (!locationNumber) {
+      alert('Please enter a location number.');
+      return;
+    }
+    const query = `SELECT LISTAGG(GROUPID, ',') WITHIN GROUP (ORDER BY GROUPID) AS GROUPID_LIST
+FROM (
+    SELECT GROUPID
+    FROM LOCATION_ADMINEXPANDEDTAB
+    WHERE LOCATION = '${locationNumber}'
+);`;
+    document.getElementById('queryResult').textContent = query;
+  }
+
+   function generateLocationGroupQuery() { // Added function from existing script logic
     const locationNumber = document.getElementById('locationNumberInput').value;
     const queryString = `Select GROUPID,LOCATION,LOCGRPID,ACCESSLEVEL,THELEVEL From LOCATION_ADMINEXPANDEDTAB where LOCGRPID = '${locationNumber}';`;
     document.getElementById('result2').innerText = queryString;
   }
+
 
   const buildingMap = {
     '-1': 'Gold Admin',
@@ -629,28 +661,6 @@ SPOOL OFF;
     document.getElementById('buildingNamesResult').innerText = buildingNames;
   }
 
-  function generateSQLQuery() {
-    const patronId = document.getElementById('patronIdInput').value;
-    const studentStatus = document.getElementById('studentStatusSelect').value;
-    const sqlQuery = `update extendedpatroninfotab set local_stu_status='${studentStatus}' where patronid=${patronId};`;
-    document.getElementById('sqlQueryResult').innerText = sqlQuery;
-  }
-
-  function generateLocationQuery() {
-    const locationNumber = document.getElementById('locationNumber').value.trim();
-    if (!locationNumber) {
-      alert('Please enter a location number.');
-      return;
-    }
-    const query = `SELECT LISTAGG(GROUPID, ',') WITHIN GROUP (ORDER BY GROUPID) AS GROUPID_LIST
-FROM (
-    SELECT GROUPID
-    FROM LOCATION_ADMINEXPANDEDTAB
-    WHERE LOCATION = '${locationNumber}'
-);`;
-    document.getElementById('queryResult').textContent = query;
-  }
-
   function generateMobileErrorQuery() {
     const pid = document.getElementById('pidInput').value;
     if (!pid) {
@@ -660,6 +670,44 @@ FROM (
     const query = `select * from mc_provisioning_requests where patronid=${pid} order by create_date;`;
     document.getElementById('mobileErrorQueryResult').innerText = query;
   }
+
+  // New Keep Active Generator SQL Function
+  function generateKeepActiveSQL() {
+      const idsInput = document.getElementById('keepActiveIds').value;
+      const dateInput = document.getElementById('keepActiveDate').value;
+
+      if (!idsInput.trim() || !dateInput) {
+          alert('Please enter both IDs and a date.');
+          return;
+      }
+
+      const ids = idsInput
+          .split(/[\s,]+/) // Handles spaces, commas, and newlines as separators
+          .map(id => id.trim())
+          .filter(id => id.length > 0 && /^\d+$/.test(id)) // Ensures ID is numeric and not empty
+          .map(id => `'${id}'`) // Enclose each ID in single quotes for SQL
+          .join(",\n        "); // Joins with comma and newline + indentation
+
+      if (!ids) {
+        alert('No valid IDs were entered. Please ensure IDs are numeric.');
+        document.getElementById('keepActiveOutput').innerText = ''; // Clear previous output
+        return;
+      }
+
+      const [year, month, day] = dateInput.split('-');
+      const formattedDate = `${month}/${day}/${year}`; // Format date as MM/DD/YYYY
+
+      const sql = `update extendedpatroninfotab set LOCAL_KEEP_ACTIVE_DATE = to_date('${formattedDate}', 'MM/DD/YYYY') 
+where patronid in (
+    select ID_Pers 
+    from pers 
+    where VAL_Univ_ID in (
+        ${ids}
+    )
+);`; // Removed the extra semicolon at the end for standard SQL practice
+      document.getElementById('keepActiveOutput').innerText = sql;
+  }
+
 </script>
 
 </body>
