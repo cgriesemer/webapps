@@ -220,6 +220,23 @@
     <pre id="keepActiveOutput" class="result-display"></pre> </section>
 
   <section class="section">
+    <h3>Conference PIN SQL Generator</h3>
+    <div class="form-group">
+      <label for="firstPinId">First ID Number:</label>
+      <input type="number" id="firstPinId" placeholder="Enter first ID number">
+    </div>
+    <div class="form-group">
+      <label for="totalPatrons">Total Patrons:</label>
+      <input type="number" id="totalPatrons" placeholder="Enter total patrons">
+    </div>
+    <div class="button-group">
+      <button onclick="generateConferencePinSQL()">Generate SQL</button>
+      <button onclick="copyToClipboard('conferencePinResult')" class="copy-button">Copy</button>
+    </div>
+    <pre id="conferencePinResult" class="result-display"></pre>
+  </section>
+
+<section class="section">
     <h3>Meal Plan Chronological Duplicate</h3>
     <div class="button-group">
       <button onclick="copyToClipboard('mealPlanQueryResult')" class="copy-button">Copy</button>
@@ -706,6 +723,26 @@ where patronid in (
     )
 );`; // Removed the extra semicolon at the end for standard SQL practice
       document.getElementById('keepActiveOutput').innerText = sql;
+  }
+
+
+
+  
+
+  function generateConferencePinSQL() {
+    const first = parseInt(document.getElementById('firstPinId').value, 10);
+    const total = parseInt(document.getElementById('totalPatrons').value, 10);
+
+    if (isNaN(first) || isNaN(total) || total < 1) {
+      alert('Please enter valid First ID and Total Patrons.');
+      return;
+    }
+
+    const ids = Array.from({ length: total }, (_, i) => `'${first + i}'`).join(',');
+
+    const sql = `update extendedpatroninfotab set pin='2025' where patronid in (select id_pers from pers where val_univ_id in (${ids}));`;
+
+    document.getElementById('conferencePinResult').innerText = sql;
   }
 
 </script>
