@@ -740,7 +740,7 @@ where patronid in (
 
     const ids = Array.from({ length: total }, (_, i) => `'${first + i}'`).join(',');
 
-    const sql = `update extendedpatroninfotab set pin='2025' where patronid in (select id_pers from pers where val_univ_id in (${ids}));`;
+    const sql = `update extendedpatroninfotab set pin='E330B6902B80DF40' where patronid in (select id_pers from pers where val_univ_id in (${ids}));`;
 
     document.getElementById('conferencePinResult').innerText = sql;
   }
