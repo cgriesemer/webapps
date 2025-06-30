@@ -289,7 +289,9 @@
         }
 
         function validateMealPlan(mealPlan, lineNumber) {
-            if (!/^\d+(S)?$/.test(mealPlan)) {
+            // OLD: /^\d+(S)?$/
+            // NEW: Allows any combination of letters and numbers, which is more flexible.
+            if (!/^[a-zA-Z0-9]+$/.test(mealPlan)) { 
                 return { error: `Line ${lineNumber}: Invalid meal plan format: ${mealPlan}` };
             }
             return {};
