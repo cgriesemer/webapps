@@ -738,12 +738,18 @@ where patronid in (
     return;
   }
 
-  const ids = Array.from({ length: total }, (_, i) => `'${first + i}'`).join(',');
+  // Compute the last value in the range
+  const last = first + total - 1;
 
+  // Generate a BETWEEN-based SQL statement
   const sql = 
-    `update extendedpatroninfotab \
-set pin='E330B6902B80DF40' \
-where patronid in (select id_pers from pers where val_univ_id in (${ids}));`;
+`UPDATE extendedpatroninfotab
+   SET pin = 'E330B6902B80DF40'
+ WHERE patronid IN (
+   SELECT id_pers
+     FROM pers
+    WHERE val_univ_id BETWEEN '${first}' AND '${last}'
+ );`;
 
   document.getElementById('conferencePinResult').innerText = sql;
 }
