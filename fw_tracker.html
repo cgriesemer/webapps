@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TRC & ERH Firmware Update Tracker</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,9 +28,6 @@
         .controls { text-align: center; margin-bottom: 30px; }
         .control-button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; margin: 0 10px; border-radius: 25px; cursor: pointer; font-size: 1em; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
         .control-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
-        #authBar { text-align: center; margin-bottom: 15px; }
-        #authBar button { margin: 0 6px; padding: 8px 14px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; }
-        #authMsg { text-align: center; margin-bottom: 10px; color: #333; }
         @media (max-width: 768px) {
             .device-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
             .device-button { padding: 10px 6px; font-size: 0.8em; }
@@ -39,11 +36,11 @@
         }
     </style>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (compat builds for simple script-tag use) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
     <script>
+      // Your Firebase project config
       const firebaseConfig = {
         apiKey: "AIzaSyDBV0aylyBLOut1vVELIE_HJwbMao0wWUw",
         authDomain: "baylor-firmware-tracker.firebaseapp.com",
@@ -54,20 +51,12 @@
       };
       firebase.initializeApp(firebaseConfig);
       const db = firebase.firestore();
-      const auth = firebase.auth();
       const docRef = db.collection("firmwareTracker").doc("state");
     </script>
 </head>
 <body>
     <div class="container">
         <h1>TRC & ERH Firmware Update Tracker</h1>
-
-        <div id="authBar">
-            <button id="loginBtn">Sign in with Google</button>
-            <span id="userEmail"></span>
-            <button id="logoutBtn" style="display:none;">Sign out</button>
-        </div>
-        <div id="authMsg">Sign in to load and sync shared state</div>
 
         <div class="controls">
             <button class="control-button" onclick="clearAll()">Clear All</button>
@@ -89,16 +78,182 @@
             </div>
         </div>
 
-        <!-- Your existing sections stay here (TRC-W, TRC-E, ERH-E, ERH-W grids) -->
-        <!-- ... keep all the <div class="section"> blocks from your current file ... -->
+        <div class="section">
+            <div class="section-title">TRC-W Devices</div>
+            <div class="firmware-version">Firmware Version: 2.17.10</div>
+            <div class="device-grid" id="trcw-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">TRC E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.17.10</div>
+            <div class="device-grid" id="trce-2-17-10-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">TRC E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.52.1</div>
+            <div class="device-grid" id="trce-2-52-1-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">TRC E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.53.0</div>
+            <div class="device-grid" id="trce-2-53-0-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">TRC E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.42.3</div>
+            <div class="device-grid" id="trce-2-42-3-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ERH E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.17.10</div>
+            <div class="device-grid" id="erhe-2-17-10-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ERH E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.52.1</div>
+            <div class="device-grid" id="erhe-2-52-1-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ERH E Devices</div>
+            <div class="firmware-version">Firmware Version: 2.42.3</div>
+            <div class="device-grid" id="erhe-2-42-3-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ERH W Devices</div>
+            <div class="firmware-version">Firmware Version: 2.17.10</div>
+            <div class="device-grid" id="erhw-2-17-10-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ERH W Devices</div>
+            <div class="firmware-version">Firmware Version: 2.52.1</div>
+            <div class="device-grid" id="erhw-2-52-1-grid"></div>
+        </div>
     </div>
 
     <script>
-        /* Your deviceData, updatedDevices set, Firestore load/save, subscribeRealtime,
-           toggleDevice, updateStats, clearAll, markAllUpdated, initializeDevices,
-           and auth.onAuthStateChanged code goes here — exactly as in the version I gave earlier */
+        // Device lists (as provided)
+        const deviceData = {
+            'trcw-grid': ['TRC201W', 'TRC202W', 'TRC204W', 'TRC206W', 'TRC208W', 'TRC210W', 'TRC211W', 'TRC212W', 'TRC213W', 'TRC214W', 'TRC215W', 'TRC216W', 'TRC217W', 'TRC221W', 'TRC223W', 'TRC225W', 'TRC226W', 'TRC227W', 'TRC228W', 'TRC229W', 'TRC301W', 'TRC302W', 'TRC304W', 'TRC306W', 'TRC308W', 'TRC310W', 'TRC311W', 'TRC312W', 'TRC313W', 'TRC314W', 'TRC315W', 'TRC316W', 'TRC317W', 'TRC321W', 'TRC323W', 'TRC325W', 'TRC326W', 'TRC327W', 'TRC328W', 'TRC329W', 'TRC332W', 'TRC334W', 'TRC401W', 'TRC402W', 'TRC404W', 'TRC406W', 'TRC408W', 'TRC410W', 'TRC411W', 'TRC412W', 'TRC413W', 'TRC414W', 'TRC415W', 'TRC416W', 'TRC417W', 'TRC421W', 'TRC423W', 'TRC425W', 'TRC426W', 'TRC427W', 'TRC428W', 'TRC429W', 'TRC432W', 'TRC434W'],
+            'trce-2-17-10-grid': ['TRC139E', 'TRC141E', 'TRC142E', 'TRC143E', 'TRC145E', 'TRC146E', 'TRC147E', 'TRC148E', 'TRC149E', 'TRC150E', 'TRC154E', 'TRC155E', 'TRC156E', 'TRC157E', 'TRC159E', 'TRC161E', 'TRC239E', 'TRC240E', 'TRC241E', 'TRC242E', 'TRC243E', 'TRC244E', 'TRC245E', 'TRC246E', 'TRC247E', 'TRC248E', 'TRC249E', 'TRC250E', 'TRC253E', 'TRC254E', 'TRC255E', 'TRC256E', 'TRC257E', 'TRC259E', 'TRC261E', 'TRC265E', 'TRC266E', 'TRC267E', 'TRC268E', 'TRC270E', 'TRC272E', 'TRC274E', 'TRC276E', 'TRC277E', 'TRC336E', 'TRC338E', 'TRC339E', 'TRC340E', 'TRC341E', 'TRC342E', 'TRC343E', 'TRC344E', 'TRC345E', 'TRC346E', 'TRC347E', 'TRC348E', 'TRC349E', 'TRC350E', 'TRC353E', 'TRC355E', 'TRC356E', 'TRC357E', 'TRC359E', 'TRC361E', 'TRC366E', 'TRC367E', 'TRC368E', 'TRC370E', 'TRC372E', 'TRC374E', 'TRC376E', 'TRC377E', 'TRC436E', 'TRC438E', 'TRC439E', 'TRC440E', 'TRC441E', 'TRC442E', 'TRC443E', 'TRC444E', 'TRC445E', 'TRC446E', 'TRC447E', 'TRC448E', 'TRC449E', 'TRC450E', 'TRC453E', 'TRC454E', 'TRC455E', 'TRC456E', 'TRC457E', 'TRC459E', 'TRC461E', 'TRC465E', 'TRC466E', 'TRC467E', 'TRC468E', 'TRC470E', 'TRC472E', 'TRC474E', 'TRC476E', 'TRC475E'],
+            'trce-2-52-1-grid': ['TRC140E', 'TRC144E', 'TRC153E', 'TRC365E'],
+            'trce-2-53-0-grid': ['TRC354E'],
+            'trce-2-42-3-grid': ['TRC376E'],
+            'erhe-2-17-10-grid': ['ERH112E', 'ERH132E', 'ERH134E', 'ERH204E', 'ERH208E', 'ERH210E', 'ERH211E', 'ERH212E', 'ERH213E', 'ERH217E', 'ERH219E', 'ERH221E', 'ERH222E', 'ERH223E', 'ERH224E', 'ERH225E', 'ERH227E', 'ERH228E', 'ERH230E', 'ERH231E', 'ERH232E', 'ERH233E', 'ERH234E', 'ERH301E', 'ERH302E', 'ERH304E', 'ERH306E', 'ERH308E', 'ERH310E', 'ERH311E', 'ERH312E', 'ERH313E', 'ERH317E', 'ERH319E', 'ERH321E', 'ERH322E', 'ERH323E', 'ERH324E', 'ERH325E', 'ERH327E', 'ERH328E', 'ERH329E', 'ERH330E', 'ERH331E', 'ERH332E', 'ERH333E', 'ERH334E', 'ERH336E', 'ERH338E', 'ERH401E', 'ERH402E', 'ERH404E', 'ERH406E', 'ERH408E', 'ERH410E', 'ERH411E', 'ERH412E', 'ERH413E', 'ERH417E', 'ERH419E', 'ERH421E', 'ERH422E', 'ERH423E', 'ERH424E', 'ERH425E', 'ERH427E', 'ERH428E', 'ERH429E', 'ERH430E', 'ERH431E', 'ERH432E', 'ERH433E', 'ERH434E', 'ERH436E', 'ERH438E'],
+            'erhe-2-52-1-grid': ['ERH101E', 'ERH102E', 'ERH104E', 'ERH106E', 'ERH108E', 'ERH110E', 'ERH117E', 'ERH119E', 'ERH121E', 'ERH122E', 'ERH123E', 'ERH124E', 'ERH125E', 'ERH127E', 'ERH128E', 'ERH129E', 'ERH130E', 'ERH131E', 'ERH133E', 'ERH201E', 'ERH202E', 'ERH206E'],
+            'erhe-2-42-3-grid': ['ERH229E'],
+            'erhw-2-17-10-grid': ['ERH243W', 'ERH244W', 'ERH245W', 'ERH246W', 'ERH249W', 'ERH250W', 'ERH251W', 'ERH252W', 'ERH253W', 'ERH255W', 'ERH257W', 'ERH261W', 'ERH262W', 'ERH263W', 'ERH264W', 'ERH265W', 'ERH266W', 'ERH267W', 'ERH268W', 'ERH270W', 'ERH272W', 'ERH274W', 'ERH275W', 'ERH276W', 'ERH340W', 'ERH342W', 'ERH343W', 'ERH344W', 'ERH345W', 'ERH346W', 'ERH349W', 'ERH350W', 'ERH351W', 'ERH352W', 'ERH353W', 'ERH355W', 'ERH357W', 'ERH361W', 'ERH362W', 'ERH363W', 'ERH364W', 'ERH365W', 'ERH366W', 'ERH367W', 'ERH368W', 'ERH370W', 'ERH372W', 'ERH374W', 'ERH375W', 'ERH376W', 'ERH440W', 'ERH442W', 'ERH443W', 'ERH444W', 'ERH445W', 'ERH446W', 'ERH449W', 'ERH450W', 'ERH451W', 'ERH452W', 'ERH453W', 'ERH455W', 'ERH457W', 'ERH461W', 'ERH462W', 'ERH463W', 'ERH464W', 'ERH465W', 'ERH466W', 'ERH467W', 'ERH468W', 'ERH470W', 'ERH472W', 'ERH474W', 'ERH476W'],
+            'erhw-2-52-1-grid': ['ERH475W']
+        };
 
-        // Keep your existing JS from the earlier merged version here
+        // Shared state
+        let updatedDevices = new Set();
+
+        // Load state from Firestore (creates doc if missing)
+        async function loadStateFromServer() {
+            const snap = await docRef.get();
+            if (snap.exists) return new Set(snap.data().updated || []);
+            await docRef.set({ updated: [] });
+            return new Set();
+        }
+
+        // Save state to Firestore
+        async function saveStateToServer() {
+            await docRef.set({ updated: Array.from(updatedDevices) }, { merge: true });
+        }
+
+        // Realtime subscription to keep all browsers in sync
+        function subscribeRealtime() {
+            docRef.onSnapshot(snap => {
+                if (!snap.exists) return;
+                const serverSet = new Set(snap.data().updated || []);
+                const local = Array.from(updatedDevices).sort().join(',');
+                const remote = Array.from(serverSet).sort().join(',');
+                if (local !== remote) {
+                    updatedDevices = serverSet;
+                    document.querySelectorAll('.device-button').forEach(btn => {
+                        if (updatedDevices.has(btn.textContent)) btn.classList.add('updated');
+                        else btn.classList.remove('updated');
+                    });
+                    updateStats();
+                }
+            });
+        }
+
+        function createDeviceButton(deviceId) {
+            const button = document.createElement('button');
+            button.className = 'device-button';
+            button.textContent = deviceId;
+            button.onclick = () => toggleDevice(button, deviceId);
+            if (updatedDevices.has(deviceId)) button.classList.add('updated');
+            return button;
+        }
+
+        async function toggleDevice(button, deviceId) {
+            if (updatedDevices.has(deviceId)) {
+                updatedDevices.delete(deviceId);
+                button.classList.remove('updated');
+            } else {
+                updatedDevices.add(deviceId);
+                button.classList.add('updated');
+            }
+            updateStats();
+            await saveStateToServer();
+        }
+
+        function updateStats() {
+            const total = Object.values(deviceData).flat().length;
+            const updated = updatedDevices.size;
+            const remaining = total - updated;
+            document.getElementById('totalDevices').textContent = total;
+            document.getElementById('updatedDevices').textContent = updated;
+            document.getElementById('remainingDevices').textContent = remaining;
+        }
+
+        async function clearAll() {
+            if (confirm('Are you sure you want to clear all updated devices?')) {
+                updatedDevices.clear();
+                document.querySelectorAll('.device-button').forEach(b => b.classList.remove('updated'));
+                updateStats();
+                await saveStateToServer();
+            }
+        }
+
+        async function markAllUpdated() {
+            if (confirm('Are you sure you want to mark all devices as updated?')) {
+                const all = Object.values(deviceData).flat();
+                updatedDevices = new Set(all);
+                document.querySelectorAll('.device-button').forEach(b => b.classList.add('updated'));
+                updateStats();
+                await saveStateToServer();
+            }
+        }
+
+        function initializeDevices() {
+            Object.entries(deviceData).forEach(([gridId, devices]) => {
+                const grid = document.getElementById(gridId);
+                if (grid) {
+                    grid.innerHTML = '';
+                    devices.forEach(deviceId => grid.appendChild(createDeviceButton(deviceId)));
+                }
+            });
+            updateStats();
+        }
+
+        // Kick everything off immediately
+        (async function start() {
+            updatedDevices = await loadStateFromServer();
+            initializeDevices();
+            subscribeRealtime();
+        })();
     </script>
 </body>
 </html>
